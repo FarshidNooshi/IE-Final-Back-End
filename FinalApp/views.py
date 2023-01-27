@@ -9,8 +9,8 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from FinalApp.models import User, ExpiredToken, Webpage
-from FinalApp.serializers import UserSerializer, ExpiredTokenSerializer, WebpageSerializer
+from FinalApp.models import User, ExpiredToken, Webpage, Alarm
+from FinalApp.serializers import UserSerializer, ExpiredTokenSerializer, WebpageSerializer, AlarmSerializer
 from .tasks import check_webpage
 
 # Create your views here.
@@ -252,9 +252,27 @@ class WebpageView(APIView):
                                              url=url,
                                              max_error=max_error)
         new_webpage.save()
-        print("*" * 100)
         result = POOL.apply_async(check_webpage, args=(new_webpage.id,))
-        # print(result.get())
-        print("*" * 200)
         serializer = WebpageSerializer(new_webpage)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AlarmView(APIView):
+    @swagger_auto_schema(
+        operation_description='This method is used to get the alarm data',
+        responses={
+            200: AlarmSerializer,
+            401: 'Unauthenticated'
+        }
+    )
+    def get(self, request):
+        print("get alarm")
+        token = request.headers.get('Authorization')
+        webpage_url = request.GET.get('webpage_url')
+        if not authenticate(request):
+            raise AuthenticationFailed('%s!' % UN_AUTHENTICATED_MESSAGE)
+        payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHMS)
+        user = User.objects.filter(id=payload['id']).first()
+        alarms = Alarm.objects.filter(webpage__url=webpage_url, webpage__user=user)
+        serializer = AlarmSerializer(alarms, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
