@@ -7,7 +7,6 @@ class AlarmSerializer(serializers.ModelSerializer):
     class Meta:
         model = Alarm
         fields = '__all__'
-        exclude = ['user', 'days']
 
 
 class ExpiredTokenSerializer(serializers.ModelSerializer):
@@ -19,7 +18,7 @@ class ExpiredTokenSerializer(serializers.ModelSerializer):
 class ResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = Result
-        fields = ['webpage', 'status_code', 'response', 'date', 'error']
+        fields = ['webpage', 'status_code', 'date', 'error']
 
 
 class WebpageSerializer(serializers.ModelSerializer):
@@ -28,7 +27,7 @@ class WebpageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Webpage
-        fields = ['user', 'url', 'active', 'max_error', 'alarms', 'results']
+        fields = ['url', 'active', 'max_error', 'alarms', 'results']
         depth = 1
 
 

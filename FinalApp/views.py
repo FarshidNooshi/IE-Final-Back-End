@@ -224,10 +224,11 @@ class WebpageView(APIView):
         if not authenticate(request):
             raise AuthenticationFailed('%s!' % UN_AUTHENTICATED_MESSAGE)
         payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHMS)
+        webpage_url = request.GET.get('webpage_url')
         user = User.objects.filter(id=payload['id']).first()
-        webpages = Webpage.objects.filter(user=user)
-        print(webpages)
+        print(webpage_url)
         print("#" * 100)
+        webpages = Webpage.objects.filter(user=user, url=webpage_url)
         serializer = WebpageSerializer(webpages, many=True)
         if not webpages:
             return Response({"message": f"no record found for {user.username}"}, status=status.HTTP_404_NOT_FOUND)
