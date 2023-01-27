@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from FinalApp.models import User, Webpage, Alarm, ExpiredToken
+from FinalApp.models import User, Webpage, Alarm, ExpiredToken, Result
 
 
 class AlarmSerializer(serializers.ModelSerializer):
@@ -16,12 +16,19 @@ class ExpiredTokenSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ResultSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Result
+        fields = '__all__'
+
+
 class WebpageSerializer(serializers.ModelSerializer):
     alarms = AlarmSerializer(many=True, read_only=True)
+    results = ResultSerializer(many=True, read_only=True)
 
     class Meta:
         model = Webpage
-        fields = ['user', 'url', 'name', 'active']
+        fields = ['user', 'url', 'name', 'active', 'max_error', 'alarms', 'results']
         depth = 1
 
 

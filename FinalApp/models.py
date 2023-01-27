@@ -34,9 +34,20 @@ class Webpage(models.Model):
     url = models.CharField(max_length=100)
     name = models.CharField(max_length=50, default="")
     active = models.BooleanField(default=True)
+    max_error = models.IntegerField(default=20)
 
     def __str__(self):
         return self.name
+
+
+class Result(models.Model):
+    webpage = models.ForeignKey(Webpage, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+    error = models.IntegerField(default=0)
+    response = models.CharField(max_length=1000, default="")
+
+    def __str__(self):
+        return self.webpage.name + " " + str(self.date)
 
 
 class Alarm(models.Model):

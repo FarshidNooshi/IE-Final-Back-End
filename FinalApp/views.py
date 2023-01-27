@@ -24,7 +24,7 @@ ALGORITHMS = ['HS256']
 
 
 def authenticate(request):
-    token = request.Headers.get('Authorization')
+    token = request.headers.get('Authorization')
     if not token:
         raise AuthenticationFailed('%s!' % UN_AUTHENTICATED_MESSAGE)
     try:
@@ -188,3 +188,21 @@ class AuthView(APIView):
         except jwt.DecodeError:
             log_dict['message'] = "Unauthenticated"
             return Response(log_dict, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class UserView(APIView):
+    @swagger_auto_schema(
+        operation_description='This method is used to get the user data',
+        responses={
+            200: UserSerializer,
+            401: 'Unauthenticated'
+        }
+    )
+    def get(self, request):
+        token = request.headers.get('Authorization')
+        if not authenticate(request):
+            raise AuthenticationFailed('%s!' % UN_AUTHENTICATED_MESSAGE)
+        payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHMS)
+        user = User.objects.filter(id=payload['id']).first()
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
