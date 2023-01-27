@@ -19,7 +19,7 @@ class ExpiredTokenSerializer(serializers.ModelSerializer):
 class ResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = Result
-        fields = '__all__'
+        fields = ['webpage', 'status_code', 'response', 'date', 'error']
 
 
 class WebpageSerializer(serializers.ModelSerializer):
@@ -28,7 +28,7 @@ class WebpageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Webpage
-        fields = ['user', 'url', 'name', 'active', 'max_error', 'alarms', 'results']
+        fields = ['user', 'url', 'active', 'max_error', 'alarms', 'results']
         depth = 1
 
 

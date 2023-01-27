@@ -1,13 +1,20 @@
-from FinalApp.celery import app
+import time
+
+from celery import Celery
+
+app = Celery()
 
 
-@app.task
-def task_one():
-    print(" task one called and worker is running good")
-    return "success"
-
-
-@app.task
-def task_two(data, *args, **kwargs):
-    print(f" task two called with the argument {data} and worker is running good")
-    return "success"
+# run bellow function as a single thread
+def check_webpage(data):
+    now_time = time.time()
+    while time.time() < now_time + 1800 * 20:
+        print("hello")
+        from FinalApp.models import Webpage
+        webpage = Webpage.objects.filter(id=data).first()
+        print(data)
+        webpage.check_status()
+        webpage.save()
+        print("@" * 100)
+        time.sleep(30)
+    return True

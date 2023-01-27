@@ -1,4 +1,5 @@
 import datetime
+from multiprocessing.pool import ThreadPool
 
 import jwt
 from drf_yasg import openapi
@@ -8,8 +9,9 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from FinalApp.models import User, ExpiredToken
-from FinalApp.serializers import UserSerializer, ExpiredTokenSerializer
+from FinalApp.models import User, ExpiredToken, Webpage
+from FinalApp.serializers import UserSerializer, ExpiredTokenSerializer, WebpageSerializer
+from .tasks import check_webpage
 
 # Create your views here.
 
@@ -21,6 +23,7 @@ QUESTION_FILL_BLANK = 'Fill'
 QUESTION_Multiple_CHOICE = 'MCQ'
 SECRET_KEY = 'secret'
 ALGORITHMS = ['HS256']
+POOL = ThreadPool(processes=10)
 
 
 def authenticate(request):
@@ -205,4 +208,52 @@ class UserView(APIView):
         payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHMS)
         user = User.objects.filter(id=payload['id']).first()
         serializer = UserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class WebpageView(APIView):
+    @swagger_auto_schema(
+        operation_description='This method is used to get the webpage data',
+        responses={
+            200: WebpageSerializer,
+            401: 'Unauthenticated'
+        }
+    )
+    def get(self, request):
+        token = request.headers.get('Authorization')
+        if not authenticate(request):
+            raise AuthenticationFailed('%s!' % UN_AUTHENTICATED_MESSAGE)
+        payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHMS)
+        user = User.objects.filter(id=payload['id']).first()
+        webpages = Webpage.objects.filter(user=user)
+        print(webpages)
+        print("#" * 100)
+        serializer = WebpageSerializer(webpages, many=True)
+        if not webpages:
+            return Response({"message": f"no record found for {user.username}"}, status=status.HTTP_404_NOT_FOUND)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        operation_description='This method is used to update the webpage data',
+        responses={
+            200: WebpageSerializer,
+            401: 'Unauthenticated'
+        }
+    )
+    def put(self, request):
+        token = request.headers.get('Authorization')
+        if not authenticate(request):
+            raise AuthenticationFailed('%s!' % UN_AUTHENTICATED_MESSAGE)
+        payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHMS)
+        user = User.objects.filter(id=payload['id']).first()
+        url, max_error = request.data['url'], request.data['max_error']
+        new_webpage = Webpage.objects.create(user=user,
+                                             url=url,
+                                             max_error=max_error)
+        new_webpage.save()
+        print("*" * 100)
+        result = POOL.apply_async(check_webpage, args=(new_webpage.id,))
+        # print(result.get())
+        print("*" * 200)
+        serializer = WebpageSerializer(new_webpage)
         return Response(serializer.data, status=status.HTTP_200_OK)
