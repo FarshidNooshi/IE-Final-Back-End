@@ -4,7 +4,10 @@ Web Programming final project
 
 ## Installation
 
-run `docker-compose up --build`
+run 
+``` terminal
+$ docker-compose up --build
+```
 
 ## Endpoints
 
