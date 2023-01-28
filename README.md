@@ -9,8 +9,8 @@ run `docker-compose up --build`
 ## Endpoints
 
 ### register
-
-```
+ 
+``` json
 {
    "name": "register",
    "url": "http://localhost:8000/api/register/",
@@ -30,7 +30,7 @@ run `docker-compose up --build`
 
 ### Login
 
-```
+``` json
 {
  "name": "login",
  "url": "http://localhost:8000/api/login/",
@@ -47,7 +47,7 @@ run `docker-compose up --build`
 
 ### Add url
 
-```
+``` json
 {
  "name": "add url",
  "url": "http://localhost:8000/api/webpage/",
@@ -68,7 +68,7 @@ run `docker-compose up --build`
 
 ### Get urls for user
 
-```
+``` json
   {
    "name": "profile",
    "url": "http://localhost:8000/api/profile/",
@@ -82,7 +82,7 @@ run `docker-compose up --build`
 
 ### Get url detailes
 
-```
+``` json
 {
  "name": "get url",
  "url": "http://localhost:8000/api/webpage?webpage_url={{url}}",
@@ -96,7 +96,7 @@ run `docker-compose up --build`
 
 ### Get Alerts for an url
 
-```
+``` json
   {
    "name": "get alerts",
    "url": "http://localhost:8000/api/alarm?webpage_url={{url_id}}",
