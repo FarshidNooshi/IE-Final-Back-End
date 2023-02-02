@@ -4,8 +4,11 @@
 
 # Web Project - Internet Engineering Final Backend Project
 
-A backend web programming final project built with Django
+This project is a web programming final project for Internet Engineering course at Amirkabir University of Technology. The project is built using Django, a high-level Python web framework, and provides a RESTful API to handle user registration, login, and URL monitoring functionality.
 
+The project provides endpoints for users to register, login, add URLs for monitoring, retrieve URLs for their account, retrieve details for a specific URL, and retrieve alerts for a specific URL.
+
+By using this project, users can monitor the status of their desired websites and receive alerts if the website experiences more than a certain number of errors. This can help users ensure the availability of their websites and take timely action if there are any issues.
 
 ## Introduction
 
