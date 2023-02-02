@@ -1,17 +1,45 @@
-# web-project
+<div align="center">
+	<h1>In The Name Of GOD</h1>
+</div>
 
-Web Programming final project
+# Web Project - Internet Engineering Final Backend Project
+
+A backend web programming final project built with Django
+
+
+## Introduction
+
+This project was created as a final project for Internet Engineering course at Amirkabir University of Technology. It is a simple RESTful API that enables users to manage urls and monitor their availability.
 
 ## Installation
 
-run 
+To run the project, you need to have [Docker](https://www.docker.com/) installed.
+
+1. Clone the repository
+
+``` terminal
+$ git clone https://github.com/FarshidNooshi/IE-Final-Back-End.git
+```
+2. Navigate to the project directory
+
+``` terminal
+$ cd IE-Final-Back-End
+```
+
+3. Build and run the project using docker-compose
+
 ``` terminal
 $ docker-compose up --build
 ```
 
+
 ## Endpoints
 
-### register
+The following endpoints are available in the backend:
+
+### Register
+
+The register endpoint allows you to create a new user account.
  
 ``` json
 {
@@ -33,6 +61,8 @@ $ docker-compose up --build
 
 ### Login
 
+The login endpoint allows you to log in with an existing user account.
+
 ``` json
 {
  "name": "login",
@@ -48,7 +78,9 @@ $ docker-compose up --build
 }
 ```
 
-### Add url
+### Add URL
+
+The add URL endpoint allows you to add a new URL to be monitored by the backend.
 
 ``` json
 {
@@ -69,7 +101,10 @@ $ docker-compose up --build
 }
 ```
 
-### Get urls for user
+
+### Get URLs for User
+
+The get URLs for user endpoint returns the list of URLs associated with the user account.
 
 ``` json
   {
@@ -83,7 +118,10 @@ $ docker-compose up --build
   }
 ```
 
-### Get url detailes
+
+### Get URL Details
+
+The get URL details endpoint returns details about a specific URL.
 
 ``` json
 {
@@ -97,7 +135,11 @@ $ docker-compose up --build
 }
 ```
 
-### Get Alerts for an url
+
+### Get Alerts for an URL
+
+The get alerts for an URL endpoint returns a list of alerts generated for a specific URL.
+
 
 ``` json
   {
